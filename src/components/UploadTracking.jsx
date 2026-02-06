@@ -10,6 +10,25 @@ const UploadTracking = () => {
     const [allServices, setAllServices] = useState([])
     const isDisabled = !text.trim() || !service || loading
 
+    // Handle file upload
+    const handleFileUpload = (e) => {
+        const file = e.target.files[0]
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = (event) => {
+            const content = event.target.result
+            // Split by newline, comma, or space
+            const newTrackings = content
+                .split(/[\n, ]+/)
+                .map(t => t.trim())
+                .filter(Boolean)
+            // Append to existing textarea content
+            setText(prev => (prev ? prev + '\n' : '') + newTrackings.join('\n'))
+        }
+        reader.readAsText(file)
+    }
+
     const handleUpload = async () => {
         const trackings = text
             .split('\n')
@@ -47,25 +66,25 @@ const UploadTracking = () => {
                     Upload Trackings
                 </h2>
                 <p className="text-sm text-gray-500">
-                    One tracking ID per line
+                    One tracking ID per line or upload a file
                 </p>
             </div>
 
-            <div style={{marginTop:"1rem"}}  className="space-y-1">
-                <label style={{marginBottom:"0.5rem"}} className=" block text-sm font-medium text-gray-700">
+            <div style={{ marginTop: '1rem' }} className="space-y-1">
+                <label style={{ marginBottom: '0.5rem' }} className="block text-sm font-medium text-gray-700">
                     Service Type
                 </label>
                 <select
                     style={{
-                        width: "100%",
-                        padding: "8px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                        fontSize: "16px",
-                        backgroundColor: "#fff",
-                        color: "#333",
+                        width: '100%',
+                        padding: '8px',
+                        borderRadius: '4px',
+                        border: '1px solid #ccc',
+                        fontSize: '16px',
+                        backgroundColor: '#fff',
+                        color: '#333',
                     }}
-                    className='outline-none'
+                    className="outline-none"
                     value={service}
                     onChange={e => setService(e.target.value)}
                 >
@@ -80,8 +99,23 @@ const UploadTracking = () => {
                 </select>
             </div>
 
-            <div style={{marginTop:"1rem"}} className="space-y-1">
-                <label style={{marginBottom:"0.5rem"}} className=" block text-sm font-medium text-gray-700">
+            {/* File Upload */}
+            <div style={{ marginTop: '1rem' }} className="space-y-1">
+                <label style={{ marginBottom: '0.5rem' }} className="block text-sm font-medium text-gray-700">
+                    Upload Text File
+                </label>
+                <input
+                    type="file"
+                    accept=".txt"
+                    onChange={handleFileUpload}
+                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-white"
+                    style={{padding:"8px"}}
+                />
+            </div>
+
+            {/* Textarea */}
+            <div style={{ marginTop: '1rem' }} className="space-y-1">
+                <label style={{ marginBottom: '0.5rem' }} className="block text-sm font-medium text-gray-700">
                     Tracking IDs
                 </label>
                 <textarea
@@ -91,7 +125,7 @@ const UploadTracking = () => {
                     value={text}
                     onChange={e => setText(e.target.value)}
                     style={{
-                        padding:'1rem'
+                        padding: '1rem',
                     }}
                 />
             </div>
@@ -104,7 +138,7 @@ const UploadTracking = () => {
                         ${isDisabled
                             ? 'cursor-not-allowed bg-gray-200 text-gray-400'
                             : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
-                    style={{padding:"0.5rem 1rem"}}
+                    style={{ padding: '0.5rem 1rem' }}
                 >
                     {loading ? 'Uploading...' : 'Upload Trackings'}
                 </button>
