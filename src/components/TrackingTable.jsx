@@ -14,7 +14,7 @@ const TrackingTable = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${config.baseUrl}/user/tracking/${id}`)
-      setData(prev => prev.filter(item => item.id !== id))
+      setData(prev => prev.filter(item => item.tracking_id !== id))
     } catch (error) {
       console.error("Delete failed:", error)
     }
@@ -74,7 +74,7 @@ const TrackingTable = () => {
               <td>
                 <button
                   style={{paddingLeft:"10px",paddingRight:"10px",paddingTop:"5px",paddingBottom:"5px"}}
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDelete(item.tracking_id)}
                   className="bg-red-500 hover:bg-red-600 text-white rounded-md text-sm"
                 >
                   Delete
